@@ -1,0 +1,39 @@
+:root {
+  --purple: #7c5cff;
+  --gold: #d99a2b;
+  --teal: #1fb8a0;
+  --rose: #d2558e;
+  --night: #0b0a1f;
+  --cream: #fff4e0;
+}
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--night);
+  color: var(--cream);
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  overflow: hidden;
+}
+#boot {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: radial-gradient(ellipse at 50% 120%, #d2558e 0%, #3a1f5c 35%, var(--night) 70%);
+}
+.boot-moon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: inset -18px -6px 0 0 #b07a1c;
+}
+.boot-title {
+  font-family: 'Righteous', system-ui, sans-serif;
+  font-size: 40px;
+  letter-spacing: 2px;
+}

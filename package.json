@@ -1,0 +1,23 @@
+{
+  "name": "moonhaven",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "A cozy retro 1950s Moon colony game for the web.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fontsource/righteous": "^5.3.0",
+    "pixi.js": "^8.23.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.0"
+  }
+}
