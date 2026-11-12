@@ -33,4 +33,11 @@
 ## M6 Feel (done)
 - First time hints: one bouncing gold arrow with 2 to 4 words. Plant, build a Solar Farm, harvest, order a rocket, unload. Then they stop.
 - Soft sounds made in code (plant, harvest, coins, build, launch, landing, chime, stamp, engine hum). Mute switch is remembered.
-- Postcard button: makes a vintage postcard of the colony (cream card, stamp, crew names, date). Save or share it; on a phone you can also press and hold the picture.
+- Postcard button: makes a vintage postcard of the colony (frames Earth and the base; tall card on phones, wide card on laptops) (cream card, stamp, crew names, date). Save or share it; on a phone you can also press and hold the picture.
+
+## M7 Polish (done)
+- Buildings drawn a bit larger; a soft squash-and-stretch when you tap one.
+- Phone layout first: rows space out on tall screens, safe areas for the iPhone notch and home bar, no double-tap zoom, no long-press menus on the game.
+- Checked at 375x667 (small iPhone), 390x844 (iPhone 14) and 1280x800 (laptop). On laptops panels float above the bottom bar.
+- Frame rate capped at 60 (30 with reduced motion). Buildings only redraw when something changes. Drawing resolution capped at 2x.
+- Reduced motion: no twinkling, no walking, no bobbing, no bouncing arrows, Earth does not rise, floating text just fades.

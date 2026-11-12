@@ -24,6 +24,7 @@ interface ModuleView {
   bar: Graphics;
   key: string;
   bubbleKey: string;
+  barOn: boolean;
 }
 
 interface CrewWalker {
@@ -364,7 +365,7 @@ export class World {
         const bubble = new Graphics();
         root.addChild(body, bar, bubble);
         this.objects.addChild(root);
-        v = { root, body, bubble, bar, key: '', bubbleKey: '' };
+        v = { root, body, bubble, bar, key: '', bubbleKey: '', barOn: false };
         this.modules.set(m.id, v);
       }
       const p = tileCenter(L, m.col, m.row);
@@ -381,13 +382,26 @@ export class World {
         else this.drawModule(v.body, m, now, state, cap);
       }
 
+      // A quick squash-and-stretch when tapped.
+      const pop = this.pops.get(m.id);
+      if (pop !== undefined) {
+        const k = Math.min(1, (this.time - pop) / 0.35);
+        const sq = Math.sin(k * Math.PI) * 0.08 * (1 - k);
+        v.body.scale.set(1 + sq, 1 - sq);
+        if (k >= 1) this.pops.delete(m.id);
+      }
+
       // Progress bar for building or upgrading
-      v.bar.clear();
       if (isBusy(m, now)) {
         const until = (building ? m.buildingUntil : m.upgradingUntil)!;
         const total = this.busyTotal(m, building);
+        v.bar.clear();
         art.drawProgress(v.bar, s, total > 0 ? 1 - (until - now) / total : 1);
         v.bar.y = s * 0.24;
+        v.barOn = true;
+      } else if (v.barOn) {
+        v.bar.clear();
+        v.barOn = false;
       }
 
       const icon = this.bubbleFor(m, now, state, cap);
@@ -428,6 +442,12 @@ export class World {
     return t;
   }
   private jobLengths = new Map<string, number>();
+  private pops = new Map<string, number>();
+
+  /** Little bounce on a module when the player taps it. */
+  pop(id: string) {
+    if (!this.reduced) this.pops.set(id, this.time);
+  }
 
   private moduleKey(m: ModuleState, now: number, cap: number, state: GameState, building: boolean) {
     if (building) return 'build';
@@ -448,7 +468,8 @@ export class World {
   }
 
   private drawModule(g: Graphics, m: ModuleState, now: number, state: GameState, cap: number) {
-    const s = this.L.tileW;
+    // Buildings are drawn a little larger than the tile so the base feels full and cozy.
+    const s = this.L.tileW * 1.14;
     switch (m.kind) {
       case 'habitat':
         art.drawHabitat(g, s, m.level);
@@ -754,6 +775,7 @@ export class World {
     for (const m of mods) {
       const p = tileCenter(L, m.col, m.row);
       if (x > p.x - s * 0.5 && x < p.x + s * 0.5 && y < p.y + L.tileH * 0.5 && y > p.y - s * 0.95) {
+        this.pop(m.id);
         this.handlers.onModule(m.id);
         return;
       }

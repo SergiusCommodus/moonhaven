@@ -41,6 +41,8 @@ async function start() {
 
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   document.documentElement.classList.toggle('reduced', motion.matches);
+  // A steady 60 at most (less work for phones), 30 when motion is reduced since little moves.
+  app.ticker.maxFPS = motion.matches ? 30 : 60;
 
   // eslint-disable-next-line prefer-const
   let ui: UI;
@@ -58,6 +60,7 @@ async function start() {
   motion.addEventListener?.('change', () => {
     world.setReducedMotion(motion.matches);
     document.documentElement.classList.toggle('reduced', motion.matches);
+    app.ticker.maxFPS = motion.matches ? 30 : 60;
   });
 
   const resize = () => {
