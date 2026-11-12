@@ -1,5 +1,41 @@
 # Progress
 
+## MORNING REPORT
+
+**1. Live demo:** https://sergiuscommodus.github.io/moonhaven/
+Code: https://github.com/SergiusCommodus/moonhaven
+
+**2. What is done**
+- All 8 milestones, plus all three extras (Galley, a 4th crop, Collection Book).
+- A new player sees the base in under 1 second, plants in 2 taps, harvests after 1 minute, and lands a first rocket in 45 seconds.
+- Logic is covered by 12 automated tests. The site rebuilds and republishes on every push.
+- Played a whole new colony through, start to finish. No console errors.
+
+**What is not done**
+- Not tested on a real iPhone, only phone-sized windows in a desktop browser. Please do the 2-minute test below.
+- I could not listen to the sounds; I only checked they play without errors.
+- Reduced motion was checked in code, not with the system setting switched on.
+- Astro Radar and Supabase are empty plug-in points by design (no database or secrets were touched).
+- Buildings cannot be moved after placing. No background music.
+
+**3. Two-minute phone test**
+1. Open the live link in Safari on your iPhone.
+2. Tap the glass greenhouse, then tap **Plant Potatoes**.
+3. Tap **Build**, tap the **20¢** button by Solar Farm, then tap a glowing tile.
+4. After about 1 minute a potato bubble appears. Tap the greenhouse to harvest.
+5. Tap **Rocket**, then **Liftoff!**. Hold **HOLD** to keep the needle in the green.
+6. About 45 seconds later the rocket lands. Tap it to unload.
+7. Tap Earth 5 times quickly, then **Fire real launch**. Check the banner and the pod by the pad.
+8. Tap **Postcard**, then **Save or share**.
+9. Tap **Sound** to mute, reload the page, and check it stays muted.
+
+**4. Top 3 things to build next**
+1. Hook up Astro Radar so real launches fire the bonus by themselves (one file to write).
+2. Friend visits with Astro Social: publish a small read-only colony snapshot and visit friends' bases.
+3. Gentle daily goals ("Earth asks for 6 potatoes") plus Add to Home Screen, for a clear reason to come back twice a day.
+
+---
+
 ## M1 Setup
 - Project created (Vite, TypeScript, PixiJS).
 - Repo: https://github.com/SergiusCommodus/moonhaven
