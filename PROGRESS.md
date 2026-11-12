@@ -24,3 +24,13 @@
 - Liftoff mini game: hold to throttle, keep the needle in the green. Up to 50% faster trip. Wide easy band for the first 3 tries.
 - Auto Launch button in the rocket panel and inside the mini game.
 - Rocket flies across the sky, lands on the pad, tap it to unload credits and parts.
+
+## M5 Real launch event (done)
+- All launch news goes through one module: `src/services/launches/index.ts`. Today it uses a test feed; an Astro Radar feed plugs in by changing one line.
+- When a launch fires: banner "Falcon 9 just lifted off. Supply drop on the way.", double cargo for 24 hours (badge in the top bar shows hours left), and a free supply pod parachutes down by the pad.
+- Hidden test button: tap Earth 5 times quickly, or open the link with `?test` at the end. The test panel can also skip time ahead.
+
+## M6 Feel (done)
+- First time hints: one bouncing gold arrow with 2 to 4 words. Plant, build a Solar Farm, harvest, order a rocket, unload. Then they stop.
+- Soft sounds made in code (plant, harvest, coins, build, launch, landing, chime, stamp, engine hum). Mute switch is remembered.
+- Postcard button: makes a vintage postcard of the colony (cream card, stamp, crew names, date). Save or share it; on a phone you can also press and hold the picture.

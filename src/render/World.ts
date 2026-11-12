@@ -1,4 +1,4 @@
-import { Application, Container, Graphics, Sprite, Texture } from 'pixi.js';
+import { Application, Container, Graphics, Rectangle, Sprite, Texture } from 'pixi.js';
 import { BALANCE } from '../config/balance';
 import { CREW } from '../config/crew';
 import { isBusy, readyCount, solarCap, syncRocket } from '../core/rules';
@@ -762,13 +762,30 @@ export class World {
     if (t) this.handlers.onEmptyTile(t.col, t.row);
   }
 
-  /** A picture of the colony for the Postcard. */
-  snapshot(): HTMLCanvasElement {
-    const wasPlacing = this.placing;
+  /**
+   * A picture of the colony for the Postcard: the whole screen, plus the part
+   * worth framing (from just above Earth down to the bottom of the base), in picture pixels.
+   */
+  snapshot(state: GameState, now: number): { canvas: HTMLCanvasElement; focus: { x: number; y: number; w: number; h: number } } {
+    const L = this.L;
+    const res = Math.min(2, window.devicePixelRatio || 1);
+    // Make sure everything is drawn and Earth is fully up before the photo.
+    this.earthRise = 1;
+    this.placeEarth();
+    this.update(state, now, 0);
     this.placeG.visible = false;
-    const canvas = this.app.renderer.extract.canvas({ target: this.app.stage, resolution: Math.min(2, window.devicePixelRatio || 1) }) as HTMLCanvasElement;
+    this.app.renderer.render(this.app.stage);
+    const canvas = this.app.renderer.extract.canvas({
+      target: this.app.stage,
+      frame: new Rectangle(0, 0, L.w, L.h),
+      resolution: res,
+    }) as HTMLCanvasElement;
     this.placeG.visible = true;
-    this.placing = wasPlacing;
-    return canvas;
+    const k = canvas.width / L.w;
+    const x0 = Math.max(0, Math.min(L.gridX, L.earth.x - L.earth.r) - 16);
+    const x1 = Math.min(L.w, Math.max(L.gridX + L.cols * L.tileW, L.earth.x + L.earth.r) + 16);
+    const y0 = Math.max(0, L.earth.y - L.earth.r * 2.2);
+    const y1 = Math.min(L.h, L.gridY + L.rows * L.tileH + 14);
+    return { canvas, focus: { x: x0 * k, y: y0 * k, w: (x1 - x0) * k, h: (y1 - y0) * k } };
   }
 }

@@ -685,6 +685,9 @@ h3 {
   padding: 0 12px;
   z-index: 30;
 }
+.has-banner .toasts {
+  top: calc(140px + var(--hud-top));
+}
 .toast {
   max-width: 420px;
   padding: 10px 16px;

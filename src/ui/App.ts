@@ -121,7 +121,10 @@ export class UI {
     this.pantryCount.textContent = formatNum(pantry);
     const boost = R.activeBoost(s, t);
     this.boostChip.hidden = !boost;
-    if (boost) this.boostChip.textContent = `2× cargo · ${formatTime(boost.endsAt - t)}`;
+    if (boost) {
+      const left = boost.endsAt - t;
+      this.boostChip.textContent = `2× cargo · ${left > 3_600_000 ? `${Math.ceil(left / 3_600_000)}h` : formatTime(left)}`;
+    }
     R.syncRocket(s, t);
     const landedPods = s.pods.filter((p) => t >= p.arrivesAt).length;
     this.rocketBadge.hidden = !(s.rocket.status === 'landed' || landedPods > 0);
@@ -165,9 +168,13 @@ export class UI {
   banner(text: string) {
     const el = h('div', { class: 'banner', role: 'status' }, icon('rocket'), h('span', {}, text));
     this.root.append(el);
+    this.root.classList.add('has-banner');
     requestAnimationFrame(() => el.classList.add('in'));
     setTimeout(() => el.classList.remove('in'), 7000);
-    setTimeout(() => el.remove(), 7800);
+    setTimeout(() => {
+      el.remove();
+      if (!this.root.querySelector('.banner')) this.root.classList.remove('has-banner');
+    }, 7800);
   }
 
   stamps(ids: string[]) {

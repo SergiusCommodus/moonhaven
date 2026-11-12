@@ -8,9 +8,9 @@ import type { UI } from './App';
 /** Make a vintage postcard picture of the colony to save or share. */
 export async function openPostcard(ui: UI) {
   sfx.open();
-  let shot: HTMLCanvasElement;
+  let shot: ReturnType<UI['world']['snapshot']>;
   try {
-    shot = ui.world.snapshot();
+    shot = ui.world.snapshot(ui.store.state, now());
   } catch {
     ui.toast('Could not take the picture this time. Try again in a moment.');
     return;
@@ -58,9 +58,17 @@ export async function openPostcard(ui: UI) {
   });
 }
 
-function compose(shot: HTMLCanvasElement, ui: UI): HTMLCanvasElement {
-  const W = 1200;
-  const H = 900;
+function compose(snap: ReturnType<UI['world']['snapshot']>, ui: UI): HTMLCanvasElement {
+  const { canvas: shot, focus } = snap;
+  const tall = focus.w / focus.h < 1;
+  const m = 44;
+  const top = 150;
+  const bottom = 110;
+  const W = tall ? 1000 : 1200;
+  const pw = W - m * 2;
+  // A tall phone picture gets a tall card, shaped to fit the colony.
+  const ph = tall ? Math.round(pw * Math.max(1, Math.min(1.45, focus.h / focus.w))) : 900 - top - bottom;
+  const H = top + ph + bottom;
   const cv = document.createElement('canvas');
   cv.width = W;
   cv.height = H;
@@ -68,31 +76,30 @@ function compose(shot: HTMLCanvasElement, ui: UI): HTMLCanvasElement {
   // Cream card with a rounded photo window
   c.fillStyle = '#FFF4E0';
   c.fillRect(0, 0, W, H);
-  const m = 44;
-  const top = 150;
-  const bottom = 110;
-  const pw = W - m * 2;
-  const ph = H - top - bottom;
   c.save();
   c.beginPath();
   c.roundRect(m, top, pw, ph, 28);
   c.clip();
   c.fillStyle = '#0B0A1F';
   c.fillRect(m, top, pw, ph);
-  // Crop the colony picture to fill the window, focusing a little above the middle
-  const sr = shot.width / shot.height;
+  // Grow the focus area to the window's shape (keeping it centered), then fit inside the picture.
   const dr = pw / ph;
-  let sw = shot.width;
-  let sh = shot.height;
-  let sx = 0;
-  let sy = 0;
-  if (sr > dr) {
-    sw = shot.height * dr;
-    sx = (shot.width - sw) / 2;
-  } else {
-    sh = shot.width / dr;
-    sy = Math.max(0, Math.min(shot.height - sh, shot.height * 0.42 - sh / 2));
+  let sw = focus.w;
+  let sh = focus.h;
+  if (sw / sh > dr) sh = sw / dr;
+  else sw = sh * dr;
+  if (sw > shot.width) {
+    sw = shot.width;
+    sh = sw / dr;
   }
+  if (sh > shot.height) {
+    sh = shot.height;
+    sw = sh * dr;
+  }
+  const cx = focus.x + focus.w / 2;
+  const cy = focus.y + focus.h / 2;
+  const sx = Math.max(0, Math.min(shot.width - sw, cx - sw / 2));
+  const sy = Math.max(0, Math.min(shot.height - sh, cy - sh / 2));
   c.drawImage(shot, sx, sy, sw, sh, m, top, pw, ph);
   c.restore();
   c.lineWidth = 6;
@@ -149,10 +156,9 @@ function compose(shot: HTMLCanvasElement, ui: UI): HTMLCanvasElement {
   c.textAlign = 'left';
   c.fillStyle = '#1A1533';
   c.font = '30px Righteous, system-ui, sans-serif';
-  c.fillText(`Colony day ${day}. Love from ${names[0]}, ${names[1]} & ${names[2]}.`, m + 4, H - 48);
-  c.fillStyle = '#D99A2B';
+  c.fillText(`Colony day ${day}. Love from ${names[0]}, ${names[1]} & ${names[2]}.`, m + 4, H - 62);
+  c.fillStyle = '#B07A1C';
   c.font = '22px system-ui, sans-serif';
-  c.textAlign = 'right';
-  c.fillText(new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }), W - m, H - 50);
+  c.fillText(new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }), m + 4, H - 28);
   return cv;
 }
