@@ -751,7 +751,7 @@ export class World {
     }
     // Pad, landed rocket and supply pods
     const pad = this.padPos();
-    const nearPad = Math.abs(x - (pad.x - s * 0.2)) < s * 0.75 && y > pad.y - s * 1.5 && y < pad.y + L.tileH * 0.75;
+    const nearPad = Math.abs(x - (pad.x - s * 0.2)) < s * 0.75 && y > pad.y - s * 1.8 && y < pad.y + L.tileH * 0.75;
     if (nearPad) {
       this.handlers.onPad();
       return;

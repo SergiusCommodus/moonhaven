@@ -80,7 +80,15 @@ export class UI {
     this.muteBtn = h('button', { class: 'barbtn', 'aria-label': 'Sound on or off', onclick: () => this.toggleMute() }) as HTMLButtonElement;
     this.rocketBadge = h('span', { class: 'badge', hidden: true });
     const btn = (name: 'build' | 'rocket' | 'crew' | 'book' | 'postcard', label: string, fn: () => void, extra?: Node) =>
-      h('button', { class: 'barbtn', 'data-hint': `bar-${name}`, onclick: () => { sfx.tap(); fn(); } }, icon(name), h('span', { class: 'lbl' }, label), extra ?? null);
+      h('button', {
+        class: 'barbtn',
+        'data-hint': `bar-${name}`,
+        onclick: () => {
+          sfx.tap();
+          if (this.placingKind) this.stopPlacing();
+          fn();
+        },
+      }, icon(name), h('span', { class: 'lbl' }, label), extra ?? null);
     this.bar = h(
       'nav',
       { class: 'bar' },
@@ -212,7 +220,8 @@ export class UI {
       }, 900);
       return;
     }
-    if (m.kind === 'solar' && Math.floor(s.solarBank) > 0 && !R.isBusy(m, t)) {
+    // Tapping a Solar Farm collects when the coin bubble is showing; otherwise it opens the panel.
+    if (m.kind === 'solar' && s.solarBank >= Math.max(5, R.solarCap(s) * 0.1) && !R.isBusy(m, t)) {
       const r = this.store.act((st) => R.collectSolar(st));
       if (r.ok && pos) {
         this.floatText(pos.x, pos.y, `+${r.value} credits`, '#F6D27A');

@@ -41,3 +41,22 @@
 - Checked at 375x667 (small iPhone), 390x844 (iPhone 14) and 1280x800 (laptop). On laptops panels float above the bottom bar.
 - Frame rate capped at 60 (30 with reduced motion). Buildings only redraw when something changes. Drawing resolution capped at 2x.
 - Reduced motion: no twinkling, no walking, no bobbing, no bouncing arrows, Earth does not rise, floating text just fades.
+
+## M8 Check (done)
+Played a brand-new colony start to finish on the production build at phone size:
+plant → build Solar Farm → harvest → Liftoff / Auto Launch → unload → upgrade → crew chat and snack → pantry → 12 hours away → welcome back → Galley → Collection Book. No console errors.
+
+Bugs found and fixed:
+- Taps did not reach the base (an invisible layer was catching them).
+- A closed panel peeked out at the bottom on laptops.
+- Tapping the crate bubble above a landed rocket did nothing.
+- The engine sound could throw an error when Liftoff ended.
+- The Postcard could miss buildings if taken right after opening the game; it also cropped badly on phones.
+- Tapping a Solar Farm collected 1 credit instead of opening its panel.
+- Hint labels ran off the screen edge; hint arrows covered the harvest bubble.
+- Added a fallback so Liftoff and Postcards draw on older iPhones (before iOS 16).
+
+## Extras (done)
+- Galley: cook Moon Fries, Crater Salad, Strawberry Shortcake, Starlight Pie. Serve to cheer up the whole crew, or sell.
+- 4th crop: Starlight Pumpkins (12 hours), unlocked at Greenhouse level 2.
+- Collection Book: 15 stamps to earn.

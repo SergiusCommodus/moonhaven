@@ -130,14 +130,22 @@ export function engineHum() {
   osc.connect(f).connect(g).connect(master);
   osc.start();
   g.gain.exponentialRampToValueAtTime(0.05, a.currentTime + 0.2);
+  let stopped = false;
   return {
     set(t: number) {
+      if (stopped) return;
       osc.frequency.setTargetAtTime(70 + t * 90, a.currentTime, 0.05);
       f.frequency.setTargetAtTime(300 + t * 900, a.currentTime, 0.05);
     },
     stop() {
-      g.gain.setTargetAtTime(0.0001, a.currentTime, 0.08);
-      osc.stop(a.currentTime + 0.4);
+      if (stopped) return;
+      stopped = true;
+      try {
+        g.gain.setTargetAtTime(0.0001, a.currentTime, 0.08);
+        osc.stop(a.currentTime + 0.4);
+      } catch {
+        /* already stopped */
+      }
     },
   };
 }

@@ -13,6 +13,20 @@ import { openDevPanel } from './ui/dev';
 import { h } from './ui/dom';
 import { maybeWelcomeBack } from './ui/welcome';
 
+// Older iPhones (before iOS 16) lack canvas roundRect, used by Liftoff and the Postcard.
+const proto = CanvasRenderingContext2D.prototype as CanvasRenderingContext2D & { roundRect?: unknown };
+if (typeof proto.roundRect !== 'function') {
+  proto.roundRect = function (this: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+    const rr = Math.min(Math.abs(r), Math.abs(w) / 2, Math.abs(h) / 2);
+    this.moveTo(x + rr, y);
+    this.arcTo(x + w, y, x + w, y + h, rr);
+    this.arcTo(x + w, y + h, x, y + h, rr);
+    this.arcTo(x, y + h, x, y, rr);
+    this.arcTo(x, y, x + w, y, rr);
+    this.closePath();
+  } as CanvasRenderingContext2D['roundRect'];
+}
+
 function safeAreas() {
   const probe = h('div', { style: 'position:fixed;visibility:hidden;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)' });
   document.body.append(probe);
